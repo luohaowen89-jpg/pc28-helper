@@ -1,1 +1,201 @@
 
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>28数据分析</title>
+
+<style>
+body{
+    margin:0;
+    padding:20px;
+    background:#f2f2f2;
+    font-family:-apple-system,BlinkMacSystemFont;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+}
+
+h2{
+    text-align:center;
+}
+
+input{
+    width:60%;
+    padding:12px;
+    font-size:18px;
+}
+
+button{
+    padding:12px;
+    background:#1677ff;
+    color:white;
+    border:0;
+    border-radius:8px;
+}
+
+.box{
+    margin-top:15px;
+    padding:10px;
+    background:#fafafa;
+    border-radius:10px;
+}
+
+.item{
+    padding:8px;
+    border-bottom:1px solid #ddd;
+}
+</style>
+
+</head>
+
+
+<body>
+
+<div class="card">
+
+<h2>加拿大28 数据分析</h2>
+
+<input id="num" placeholder="输入号码例如 646">
+<button onclick="add()">记录</button>
+
+
+<div class="box">
+<h3 id="result">等待输入</h3>
+</div>
+
+
+<div class="box">
+<h3>统计</h3>
+<p id="stat"></p>
+</div>
+
+
+<div class="box">
+<h3>历史记录</h3>
+<div id="list"></div>
+</div>
+
+
+</div>
+
+
+<script>
+
+let data =
+JSON.parse(localStorage.getItem("28data")||"[]");
+
+
+function add(){
+
+let n=document.getElementById("num").value;
+
+
+if(!/^\d{3}$/.test(n)){
+alert("请输入3位数字");
+return;
+}
+
+
+let sum =
+Number(n[0])+
+Number(n[1])+
+Number(n[2]);
+
+
+let size=sum>=14?"大":"小";
+
+let odd=sum%2==0?"双":"单";
+
+
+data.unshift({
+num:n,
+sum:sum,
+size:size,
+odd:odd,
+time:new Date().toLocaleString()
+});
+
+
+localStorage.setItem(
+"28data",
+JSON.stringify(data)
+);
+
+
+document.getElementById("num").value="";
+
+show();
+
+}
+
+
+
+function show(){
+
+
+let html="";
+
+let big=0;
+let small=0;
+let dan=0;
+let shuang=0;
+
+
+data.forEach(x=>{
+
+
+html+=
+`
+<div class="item">
+${x.time}<br>
+号码：${x.num}
+&nbsp;
+和值：${x.sum}
+&nbsp;
+${x.size}${x.odd}
+</div>
+`;
+
+
+if(x.size=="大")
+big++;
+else
+small++;
+
+
+if(x.odd=="单")
+dan++;
+else
+shuang++;
+
+
+});
+
+
+document.getElementById("list").innerHTML=html;
+
+
+document.getElementById("stat").innerHTML=
+`
+大：${big} 次<br>
+小：${small} 次<br>
+单：${dan} 次<br>
+双：${shuang} 次
+`;
+
+}
+
+
+show();
+
+
+</script>
+
+
+</body>
+</html>
